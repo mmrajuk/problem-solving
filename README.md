@@ -1,2 +1,2 @@
 # problem-solving
-Intended to use it for problem solving using java
+Intended to use it for solving coding questions using java
