@@ -22,13 +22,15 @@ repositories {
 
 dependencies {
     // This dependency is used by the application.
-    implementation 'com.google.guava:guava:28.1-jre'
+    // https://mvnrepository.com/artifact/com.google.guava/guava
+    compile group: 'com.google.guava', name: 'guava', version: '28.1-jre'
 
-    // Use JUnit test framework
-    testImplementation 'junit:junit:4.12'
+
+
+    // https://mvnrepository.com/artifact/junit/junit
+    testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 
-application {
-    // Define the main class for the application.
-    mainClassName = 'com.ps.App'
-}
+
+// Define the main class for the application.
+mainClassName = 'com.ps.App'
