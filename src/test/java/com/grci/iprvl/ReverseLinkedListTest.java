@@ -75,7 +75,7 @@ public class ReverseLinkedListTest {
     }
 
     @Test
-    public void testReverseFirstNNodes(){
+    public void testReverseFirstKNodes(){
 
         ReverseLinkedList rll = new ReverseLinkedList();
 
