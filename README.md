@@ -12,6 +12,13 @@ Intended to use it for solving coding questions in java
 # Setup project
 - Import the project as gradle module in IDE / Eclipse
 
+# Run tests 
+- Under check-in directory do the following
+   ./gradlw test
+
+# Debug tests in IDE
+   After setting up project in IDE, open any test class under src/test/java and debug as JUnit test.
+
       
   
   
