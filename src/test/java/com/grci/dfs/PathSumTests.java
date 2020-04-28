@@ -8,13 +8,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 
-public class DFSTest {
+public class PathSumTests {
 
 
     @Test
-    public void testHasSumPath(){
+    public void testMatchingSumPath(){
 
-        DFS tps = new DFS();
+        PathSum tps = new PathSum();
 
         TreeNode root = new TreeNode(12);
         root.left = new TreeNode(7);
@@ -23,13 +23,13 @@ public class DFSTest {
         root.right.left = new TreeNode(10);
         root.right.right = new TreeNode(5);
 
-        assertTrue(tps.hasSumPath(root,23));
-        assertFalse(tps.hasSumPath(root,16));
+        assertTrue(tps.hasMatchingSumPath(root,23));
+        assertFalse(tps.hasMatchingSumPath(root,16));
     }
 
     @Test
-    public void testFindAllSumPath(){
-        DFS tps = new DFS();
+    public void testFindAllMatchingSumPaths(){
+        PathSum tps = new PathSum();
         TreeNode root = new TreeNode(12);
         root.left = new TreeNode(7);
         root.right = new TreeNode(1);
@@ -37,7 +37,7 @@ public class DFSTest {
         root.right.left = new TreeNode(10);
         root.right.right = new TreeNode(5);
 
-        List<List<Integer>> allPathsList = tps.findAllPaths(root,23);
+        List<List<Integer>> allPathsList = tps.findAllMatchingSumPaths(root,23);
 
         assertEquals(allPathsList.size(),2);
         assertEquals(allPathsList.get(0).get(0).intValue(),12);
@@ -50,7 +50,7 @@ public class DFSTest {
 
     @Test
     public void testFindAllPathSum(){
-        DFS tps = new DFS();
+        PathSum tps = new PathSum();
         TreeNode root = new TreeNode(1);
         root.left = new TreeNode(0);
         root.right = new TreeNode(1);
@@ -61,19 +61,7 @@ public class DFSTest {
         assertEquals(tps.findAllPathSum(root),332);
     }
 
-    @Test
-    public void testGiveSequenceExistInTreePath(){
-        TreeNode root = new TreeNode(1);
-        root.left = new TreeNode(0);
-        root.right = new TreeNode(1);
-        root.left.left = new TreeNode(1);
-        root.right.left = new TreeNode(6);
-        root.right.right = new TreeNode(5);
 
-        DFS tps = new DFS();
-        assertFalse(tps.findGivenSequencePath(root,new int[]{1,0,7}));
-        assertTrue(tps.findGivenSequencePath(root,new int[]{1,1,6}));
-    }
 
     @Test
     public void testCountSumPaths(){
@@ -83,7 +71,7 @@ public class DFSTest {
         root.left.left = new TreeNode(4);
         root.right.left = new TreeNode(10);
         root.right.right = new TreeNode(5);
-        DFS tps = new DFS();
+        PathSum tps = new PathSum();
         assertEquals(2,tps.countSumPaths(root,11));
 
         root = new TreeNode(1);
@@ -97,38 +85,15 @@ public class DFSTest {
 
     }
 
-
-    @Test
-    public void testTreeDiameter() {
-
-        DFS tps = new DFS();
-
-        TreeNode root = new TreeNode(1);
-        root.left = new TreeNode(2);
-        root.right = new TreeNode(3);
-        root.left.left = new TreeNode(4);
-        root.right.left = new TreeNode(5);
-        root.right.right = new TreeNode(6);
-        assertEquals(tps.findTreeDiameter(root),5);
-
-        root.left.left = null;
-        root.right.left.left = new TreeNode(7);
-        root.right.left.right = new TreeNode(8);
-        root.right.right.left = new TreeNode(9);
-        root.right.left.right.left = new TreeNode(10);
-        root.right.right.left.left = new TreeNode(11);
-        assertEquals(tps.findTreeDiameter(root),7);
-    }
-
     @Test
     public void testTreeMaxSum(){
-        DFS tps = new DFS();
+        PathSum tps = new PathSum();
         TreeNode root = new TreeNode(1);
         root.left = new TreeNode(2);
         root.right = new TreeNode(3);
         assertEquals(tps.findTreeMaxSum(root),6);
 
-        DFS tps1 = new DFS();
+        PathSum tps1 = new PathSum();
         root.left.left = new TreeNode(1);
         root.left.right = new TreeNode(3);
         root.right.left = new TreeNode(5);
@@ -138,7 +103,7 @@ public class DFSTest {
         root.right.right.left = new TreeNode(9);
         assertEquals(tps1.findTreeMaxSum(root),31);
 
-        DFS tps2 = new DFS();
+        PathSum tps2 = new PathSum();
         root = new TreeNode(-1);
         root.left = new TreeNode(-3);
         assertEquals(tps2.findTreeMaxSum(root),-1);
