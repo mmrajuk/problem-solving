@@ -186,4 +186,35 @@ public class BFSTraversal {
 
     }
 
+
+    /**
+     *
+     * @param root
+     * @param key node value
+     * @return
+     *
+     * Given a binary tree and a node, find the level order successor of the given node in the tree.
+     * The level order successor is the node that appears right after the given node in the level order traversal.
+     */
+    public TreeNode findLevelOrderSuccessor(TreeNode root, int key){
+        if(root == null)
+            return null;
+        Queue<TreeNode> queue = new LinkedList<>();//Queue is implemented using Linked List in Java
+        queue.add(root);
+        while(!queue.isEmpty()){
+            //level size to iterate over
+            int lSize = queue.size();
+            for(int i=0; i<lSize; i++) {
+                TreeNode node = queue.poll();
+                if (node.left != null)
+                    queue.add(node.left);
+                if (node.right != null)
+                    queue.add(node.right);
+                if(node.val == key)
+                    return queue.poll();
+            }
+        }
+        return null;
+    }
+
 }

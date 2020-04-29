@@ -87,4 +87,17 @@ public class BFSTraversalTest {
         root.right.left.left = new TreeNode(11);
         assertEquals(3,bfs.findMinDepth(root));
     }
+
+    @Test
+    public void testFindLevelOrderSuccessor(){
+        TreeNode root = new TreeNode(12);
+        root.left = new TreeNode(7);
+        root.right = new TreeNode(1);
+        root.left.left = new TreeNode(9);
+        root.right.left = new TreeNode(10);
+        root.right.right = new TreeNode(5);
+        BFSTraversal bfs = new BFSTraversal();
+        assertEquals(10,bfs.findLevelOrderSuccessor(root, 9).val);
+        assertEquals(7,bfs.findLevelOrderSuccessor(root, 12).val);
+    }
 }
