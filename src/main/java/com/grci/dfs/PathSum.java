@@ -3,44 +3,74 @@ package com.grci.dfs;
 import com.common.TreeNode;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 
-class DFS {
+public class PathSum {
 
-
-    public boolean hasSumPath(TreeNode root, int sum) {
+    /**
+     *
+     * @param root
+     * @param sum
+     * @return
+     * Given a binary tree and a number ‘S’,
+     * find if the tree has a path from root-to-leaf such that
+     * the sum of all the node values of tha path equals ‘S’.
+     */
+    public boolean hasMatchingSumPath(TreeNode root, int sum) {
         if(root == null)
             return false;
-        if(root.left == null && root.right == null && sum == root.val)
+        //as path sum must be from root to leaf node, the following condition does the trick.
+        if(root.left == null //left node null
+                && root.right == null && //right node null
+                sum == root.val) //sum should be equal to leaf node value,
+            // since we are subtracting node value during traverse from top to bottom
             return true;
 
-        return hasSumPath(root.left, sum - root.val)
-                ||hasSumPath(root.right,sum-root.val);
+        return hasMatchingSumPath(root.left, sum - root.val) //subtracting node value from sum
+                || hasMatchingSumPath(root.right,sum-root.val);//subtracting node value from sum
     }
 
-    public List<List<Integer>> findAllPaths(TreeNode root, int sum) {
+
+    /**
+     *
+     * @param root
+     * @param sum
+     * @return
+     * Given a binary tree and a number ‘S’,
+     * find all paths from root-to-leaf such that the sum of all the node values of each path equals ‘S’.
+     */
+    public List<List<Integer>> findAllMatchingSumPaths(TreeNode root, int sum) {
         List<List<Integer>> allPaths = new ArrayList<>();
         List<Integer> currentPath = new ArrayList<>();
-        findPath(root,sum,currentPath,allPaths);
+        findMatchingSumPath(root,sum,currentPath,allPaths);
         return allPaths;
     }
 
-    private void findPath(TreeNode root, int sum,
-                                 List<Integer> currentPath,
-                                 List<List<Integer>> allPaths){
+    private void findMatchingSumPath(TreeNode root, int sum,
+                                     List<Integer> currentPath,
+                                     List<List<Integer>> allPaths){
         if(root == null)
             return;
         currentPath.add(root.val);
         if(root.left==null && root.right==null&&sum==root.val){
             allPaths.add(new ArrayList<>(currentPath));
         } else {
-            findPath(root.left,sum-root.val,currentPath,allPaths);
-            findPath(root.right, sum-root.val,currentPath,allPaths);
+            findMatchingSumPath(root.left,sum-root.val,currentPath,allPaths);
+            findMatchingSumPath(root.right, sum-root.val,currentPath,allPaths);
         }
-        currentPath.remove(currentPath.size() - 1);
+        currentPath.remove(currentPath.size() - 1);//remove leaf node from current path
     }
 
+    /**
+     *
+     * @param root
+     * @return
+     * Given a binary tree where each node can only have a digit (0-9) value,
+     * each root-to-leaf path will represent a number.
+     * Find the total sum of all the numbers represented by all paths.
+     */
     public int findAllPathSum(TreeNode root){
         return findPathSum(root, 0);
     }
@@ -53,29 +83,6 @@ class DFS {
         if(node.left==null && node.right == null)
             return pathSum;
         return findPathSum(node.left,pathSum)+ findPathSum(node.right,pathSum);
-    }
-
-    /**
-     *
-     * @param root
-     * @param sequence
-     * @return
-     *
-     * Find if given sequence existed in tree path
-     */
-    public boolean findGivenSequencePath(TreeNode root,int[] sequence){
-        return findGivenSequencePath(root,sequence,0);
-    }
-
-    private boolean findGivenSequencePath(TreeNode root, int[] sequence, int level) {
-        if(root == null)
-            return false;
-        if(root.val!=sequence[level])
-            return false;
-        if(root.val == sequence[level] && sequence.length == level + 1)
-            return true;
-        return findGivenSequencePath(root.left,sequence,level+1)||
-                    findGivenSequencePath(root.right,sequence,level+1);
     }
 
 
@@ -100,55 +107,25 @@ class DFS {
     private void countSumPaths(TreeNode root, int sum, int currentPathSum,List<Integer> currentPath ,
                                List<List<Integer>> sumPaths) {
         if(root == null){
-          return;
+            return;
         }
         currentPath.add(root.val);
+        //find if there is a sub path sum matching at currently added node
         ListIterator<Integer> listIterator = currentPath.listIterator(currentPath.size());
         int pathSum = 0;
+        List<Integer> subPath = new ArrayList<>();
         while (listIterator.hasPrevious()){
-            pathSum += listIterator.previous();
+            int val = listIterator.previous();
+            pathSum += val;
+            subPath.add(val);
             if(pathSum == sum){
-                sumPaths.add(new ArrayList<>(currentPath));
+                Collections.reverse(subPath);
+                sumPaths.add(subPath);
             }
         }
         countSumPaths(root.left,sum,currentPathSum,currentPath,sumPaths);
         countSumPaths(root.right,sum,currentPathSum,currentPath,sumPaths);
-        if(currentPath.size()>0)
-            currentPath.remove(currentPath.size()-1);//last index.
-    }
-
-
-
-
-
-    int treeDiameter = 0;
-    /**
-     *
-     * @param root
-     * @return
-     *
-     * The diameter of a tree is the number of nodes on the longest path between any two leaf nodes.
-     * The diameter of a tree may or may not pass through the root
-     * Note: You can always assume that there are at least two leaf nodes in the given tree.
-     */
-    public int findTreeDiameter(TreeNode root){
-        calculateHeight(root);
-        return treeDiameter;
-    }
-
-    private int calculateHeight(TreeNode root){
-
-        if(root == null)
-            return 0;
-
-        int leftSubTreeHeight = calculateHeight(root.left);
-        int rightSubTreeHeight = calculateHeight(root.right);
-
-        int diameter = leftSubTreeHeight + rightSubTreeHeight + 1; // +1 includes current node.
-
-        treeDiameter = Math.max(treeDiameter, diameter);
-
-        return Math.max(leftSubTreeHeight, rightSubTreeHeight) + 1;
+        currentPath.remove(currentPath.size()-1);//last index.
     }
 
     int maxSum = Integer.MIN_VALUE;
@@ -156,6 +133,9 @@ class DFS {
      *
      * @param root
      * @return
+     * Find the path with the maximum sum in a given binary tree.
+     * Write a function that returns the maximum sum.
+     * A path can be defined as a sequence of nodes between any two nodes and doesn’t necessarily pass through the root.
      */
     public int findTreeMaxSum(TreeNode root){
         calculateSum(root);
@@ -180,4 +160,3 @@ class DFS {
         return Math.max(leftSubTreeSum, rightSubTreeSum) + root.val;
     }
 }
-
