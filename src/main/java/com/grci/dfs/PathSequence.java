@@ -1,5 +1,7 @@
 package com.grci.dfs;
 
+import com.common.TreeNode;
+
 public class PathSequence {
 
     /**

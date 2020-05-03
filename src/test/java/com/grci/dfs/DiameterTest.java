@@ -1,5 +1,6 @@
 package com.grci.dfs;
 
+import com.common.TreeNode;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
