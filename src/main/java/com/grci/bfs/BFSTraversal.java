@@ -100,7 +100,7 @@ public class BFSTraversal {
             //level size to iterate over
             int lSize = queue.size();
             //placeholder for holding elements in a level
-            List<Integer> lElements = new ArrayList<>();
+            List<Integer> lElements = new LinkedList<>();
             for(int i=0; i<lSize; i++) {
                 TreeNode node = queue.poll();
                 if(zigZag)
@@ -215,6 +215,83 @@ public class BFSTraversal {
             }
         }
         return null;
+    }
+
+    /**
+     *
+     * @param root
+     * @return
+     * Given a binary tree, connect each node with its level order successor.
+     * The last node of each level should point to a null node.
+     *
+     */
+    public void connectLevelOrderSiblings(TreeNode root){
+        Queue<TreeNode> queue = new LinkedList<>();//Queue is implemented using Linked List in Java
+        queue.add(root);
+        while(!queue.isEmpty()){
+            //level size to iterate over
+            int lSize = queue.size();
+            for(int i=0; i<lSize; i++) {
+                TreeNode node = queue.poll();
+                if (node.left != null)
+                    queue.add(node.left);
+                if (node.right != null)
+                    queue.add(node.right);
+                if(i != lSize-1) //reference to next node except for last one.
+                    node.next = queue.peek();
+            }
+        }
+    }
+
+
+    /**
+     *
+     * @param root
+     * Given a binary tree, connect each node with its level order successor.
+     * The last node of each level should point to the first node of the next level.
+     */
+    public void connectAllLevelOrderSiblings(TreeNode root){
+        Queue<TreeNode> queue = new LinkedList<>();//Queue is implemented using Linked List in Java
+        queue.add(root);
+        while(!queue.isEmpty()){
+            //level size to iterate over
+            int lSize = queue.size();
+            for(int i=0; i<lSize; i++) {
+                TreeNode node = queue.poll();
+                if (node.left != null)
+                    queue.add(node.left);
+                if (node.right != null)
+                    queue.add(node.right);
+                node.next = queue.peek();
+            }
+        }
+    }
+
+    /**
+     *
+     * @param root
+     * @return
+     * Given a binary tree, return an array containing nodes in its right view.
+     * The right view of a binary tree is the set of nodes visible when the tree is seen from the right side.
+     */
+    public List<TreeNode> rightView(TreeNode root){
+        List<TreeNode> rightView = new ArrayList<>();
+        Queue<TreeNode> queue = new LinkedList<>();//Queue is implemented using Linked List in Java
+        queue.add(root);
+        while(!queue.isEmpty()){
+            //level size to iterate over
+            int lSize = queue.size();
+            TreeNode node = null;
+            for(int i=0; i<lSize; i++) {
+                node = queue.poll();
+                if (node.left != null)
+                    queue.add(node.left);
+                if (node.right != null)
+                    queue.add(node.right);
+            }
+            rightView.add(node);
+        }
+        return rightView;
     }
 
 }

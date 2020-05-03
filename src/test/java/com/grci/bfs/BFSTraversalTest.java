@@ -4,10 +4,10 @@ import com.common.TreeNode;
 import com.google.common.collect.Lists;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class BFSTraversalTest {
 
@@ -99,5 +99,55 @@ public class BFSTraversalTest {
         BFSTraversal bfs = new BFSTraversal();
         assertEquals(10,bfs.findLevelOrderSuccessor(root, 9).val);
         assertEquals(7,bfs.findLevelOrderSuccessor(root, 12).val);
+    }
+
+    @Test
+    public void testConnectLevelOrderSiblings(){
+        TreeNode root = new TreeNode(12);
+        root.left = new TreeNode(7);
+        root.right = new TreeNode(1);
+        root.left.left = new TreeNode(9);
+        root.right.left = new TreeNode(10);
+        root.right.right = new TreeNode(5);
+        BFSTraversal bfs = new BFSTraversal();
+        bfs.connectLevelOrderSiblings(root);
+        assertNull(root.next);
+        assertEquals(root.right,root.left.next);
+        assertNull(root.right.next);
+        assertEquals(root.right.left,root.left.left.next);
+        assertEquals(root.right.right,root.right.left.next);
+        assertNull(root.right.right.next);
+    }
+
+    @Test
+    public void testConnectAllLevelOrderSiblings(){
+        TreeNode root = new TreeNode(12);
+        root.left = new TreeNode(7);
+        root.right = new TreeNode(1);
+        root.left.left = new TreeNode(9);
+        root.right.left = new TreeNode(10);
+        root.right.right = new TreeNode(5);
+        BFSTraversal bfs = new BFSTraversal();
+        bfs.connectAllLevelOrderSiblings(root);
+        assertEquals(root.left,root.next);
+        assertEquals(root.right,root.left.next);
+        assertEquals(root.left.left,root.right.next);
+        assertEquals(root.right.left,root.left.left.next);
+        assertEquals(root.right.right,root.right.left.next);
+        assertNull(root.right.right.next);
+    }
+
+    @Test
+    public void testRightView(){
+        TreeNode root = new TreeNode(12);
+        root.left = new TreeNode(7);
+        root.right = new TreeNode(1);
+        root.left.left = new TreeNode(9);
+        root.right.left = new TreeNode(10);
+        root.right.right = new TreeNode(5);
+        root.left.left.left = new TreeNode(3);
+        BFSTraversal bfs = new BFSTraversal();
+        assertEquals(Lists.newArrayList(root,root.right,root.right.right,root.left.left.left),
+                bfs.rightView(root));
     }
 }
