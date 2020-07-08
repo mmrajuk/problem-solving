@@ -72,8 +72,6 @@ public class GenerateConcordance {
         }
 
         trie.print();
-
-
     }
 
     /**
@@ -161,27 +159,26 @@ class ConcordanceTrie {
     }
 
     public void print(){
-        StringBuilder builder = new StringBuilder();
-        printInPrettyFormat(this.root, builder);
-        System.out.println(builder.toString());
+        printInPrettyFormat(this.root, "");
     }
 
-    private void printInPrettyFormat(ConcordanceNode node, StringBuilder builder){
+    private void printInPrettyFormat(ConcordanceNode node, String word){
         if(node!=null) {
             if (node.isWord()) {
                 //a: {4:1,2,3,3}
-                String word = builder.toString();
+                StringBuilder builder = new StringBuilder();
+                builder.append(word);
                 builder.append(": ")
                         .append("{")
                         .append(node.getWordCount())
                         .append(":");
-                node.getOccurrences().stream().forEach(v -> builder.append(v).append(","));
+                builder.append(node.getOccurrences().stream()
+                        .map(v -> Integer.toString(v)).collect(Collectors.joining(",")));
                 builder.append("}");
-                builder.append("\n");
+                System.out.println(builder.toString());
             }
             node.getChildren().entrySet().forEach(e -> {
-                builder.append(e.getKey());
-                printInPrettyFormat(e.getValue(),builder);
+                printInPrettyFormat(e.getValue(),word+e.getKey());
             });
         }
     }
