@@ -18,6 +18,10 @@ repositories {
     // Use jcenter for resolving dependencies.
     // You can declare any Maven/Ivy/file repository here.
     jcenter()
+
+    /*maven {
+        url "http://localhost:8081/repository/maven-public/"
+    }*/
 }
 
 dependencies {
@@ -29,8 +33,12 @@ dependencies {
     // https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api
     compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.1'
 
+    // https://mvnrepository.com/artifact/au.com.dius/pact-jvm-consumer
+    compile group: 'au.com.dius', name: 'pact-jvm-consumer', version: '4.0.10'
 
+    compile group: 'com.jayway.jsonpath', name:'json-path', version: '2.5.0'
 
+    implementation 'com.remondis.cdc:pact-consumer-builder:0.1.5'
 
     // https://mvnrepository.com/artifact/junit/junit
     testCompile group: 'junit', name: 'junit', version: '4.12'

@@ -1,9 +1,10 @@
 package com;
 
+import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
-import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -64,63 +65,111 @@ public class GenerateConcordance {
             //Ignore if its not a number
         }
 
-        Tokenizer wordTokenizer = test.getTokenizer(TOKENIZER_TYPE.WORD);
-
-        for(int i=1; i<inputLines.size(); i++){
-            List<String> words = wordTokenizer.tokenize(inputLines.get(i));
-            words.forEach(word -> trie.insert(word.toLowerCase(),1));
+        Tokenizer sentenceTokenizer = test.getTokenizer(TOKENIZER_TYPE.SENTENCE);
+        List<String> sentences = new ArrayList<>();
+        for(int i=1; i<inputLines.size(); i++) {
+            sentences.addAll(sentenceTokenizer.tokenize(inputLines.get(i)));
         }
 
+        Tokenizer wordTokenizer = test.getTokenizer(TOKENIZER_TYPE.WORD);
+        for(int i=0; i<sentences.size(); i++){
+            List<String> words = wordTokenizer.tokenize(sentences.get(i));
+            int j = i+1;
+            words.forEach(word -> trie.insert(word.toLowerCase(),j));
+        }
         trie.print();
     }
 
-    /**
-     * Purpose of Tokenizer interface here is limited to Concordance test here.
-     * If we have to implement Tokenizer for English or other language(s) which are all Unicode supported,
-     * we need to define respective grammar rules and process the text which is way too complex.
-     * Instead we could leverage open NLP libraries to accomplish this.
-     *
-     */
-    private interface Tokenizer {
-        List<String> tokenize(String input);
-    }
-
-    /**
-     * Supported sentence formats for given input.
-     *
-     */
-    private class SentenceTokenizer implements Tokenizer {
-        @Override
-        public List<String> tokenize(String input) {
-            return null;
-        }
-    }
-
-    /**
-     * Word tokenizer is a simple whitespace delimiter
-     */
-    private class WordTokenizer implements Tokenizer {
-
-        private final Pattern WORD_PATTERN = Pattern.compile("\\b");
-
-        private final Pattern IGNORABLE_CHARS = Pattern.compile("^[\\s|\\.|\\?|\\,]\\s*$");
-
-        @Override
-        public List<String> tokenize(String input) {
-            return WORD_PATTERN.splitAsStream(input).
-                    parallel().filter(word -> !IGNORABLE_CHARS.matcher(word).matches()
-                            ).collect(Collectors.toList());
-        }
-    }
-
-    private Tokenizer getTokenizer(TOKENIZER_TYPE value){
-        if(value == TOKENIZER_TYPE.SENTENCE)
-            return new SentenceTokenizer();
+    public Tokenizer getTokenizer(GenerateConcordance.TOKENIZER_TYPE value){
+        if(value == GenerateConcordance.TOKENIZER_TYPE.SENTENCE)
+            return SentenceTokenizer.getInstance();
         else
-            return new WordTokenizer();
+            return WordTokenizer.getInstance();
+    }
+}
+
+/**
+ * Purpose of Tokenizer interface here is limited to Concordance test here.
+ * If we have to implement Tokenizer for English or other language(s) which are all Unicode supported,
+ * we need to define respective grammar rules and process the text which is way too complex.
+ * Instead we could leverage open NLP libraries to accomplish this.
+ *
+ */
+interface Tokenizer {
+    List<String> tokenize(String input);
+}
+
+/**
+ * Supported sentence formats for given input.
+ *
+ */
+class SentenceTokenizer implements Tokenizer {
+
+    private static BreakIterator iterator = BreakIterator.getSentenceInstance(Locale.US);
+    private static SentenceTokenizer _instance;
+    private SentenceTokenizer(){
+    }
+    @Override
+    public List<String> tokenize(String input) {
+        iterator.setText(input);
+        List<String> sentences = new ArrayList<>();
+        int start = iterator.first();
+        for ( int end = iterator.next();
+              end != BreakIterator.DONE;
+              start = end, end = iterator.next()) {
+            sentences.add(input.substring(start, end));
+        }
+        return sentences;
     }
 
+    /**
+     * @Singleton
+     * @return
+     */
+    public static Tokenizer getInstance(){
+        if(_instance ==  null) {
+            synchronized (SentenceTokenizer.class) {
+                if(_instance == null){
+                    _instance = new SentenceTokenizer();
+                }
+            }
+        }
+        return _instance;
+    }
+}
 
+/**
+ * Word tokenizer is a simple whitespace delimiter
+ */
+class WordTokenizer implements Tokenizer {
+
+    private final Pattern WORD_PATTERN = Pattern.compile("\\b");
+
+    private final Pattern IGNORABLE_CHARS = Pattern.compile("^[\\s.?,\"':()\\d\\?]*\\s*$");
+
+    private static WordTokenizer _instance;
+
+    @Override
+    public List<String> tokenize(String input) {
+        return WORD_PATTERN.splitAsStream(input).
+                parallel().filter(word -> !IGNORABLE_CHARS.matcher(word).matches()
+        ).collect(Collectors.toList());
+    }
+
+    /**
+     * @Singleton
+     * @return
+     */
+    public static Tokenizer getInstance(){
+        if(_instance ==  null) {
+            synchronized (SentenceTokenizer.class) {
+                if(_instance == null){
+                    _instance = new WordTokenizer();
+                }
+            }
+        }
+        return _instance;
+    }
 }
 
 /**

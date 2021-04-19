@@ -8,3 +8,5 @@
  */
 
 rootProject.name = 'problem-solving'
+include 'learn-akka'
+
